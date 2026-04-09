@@ -31,10 +31,23 @@ Batch build with Docker Compose:
 - `docker-compose.override.yml` only carries the local `build` definitions. When you run `docker compose up --build`, Compose uses the override and rebuilds the images locally before starting them.
 - Set `BUILD_DIR` to the host directory you want to build, and optionally set `BUILD_COMMAND` (defaults to `make`).
 - Optionally set `PCCT_IMAGE_PREFIX` (defaults to `ghcr.io/maikebing`) and `PCCT_IMAGE_TAG` (defaults to `latest`) to switch image registry/tag.
+- The repo root also provides `compose-up-all.cmd` and `compose-up-all.sh` wrapper scripts so you do not have to export the environment variables manually each time.
+- The wrapper scripts default to `pull` mode, which only uses `docker-compose.yml` and pulls remote images. Pass `--build` or `--mode build` to add `docker-compose.override.yml` and rebuild the images locally.
+- The wrapper scripts default to the `all` target set. You can narrow the run with `--targets`, for example `x64`, `arm64`, `x86,x64`, or `x86 x64`. Supported targets are `x86legacy`, `x86`, `arm`, `x64`, `arm64`, and `loongson`.
 - PowerShell example:
   `$env:BUILD_DIR='D:/path/to/project'; $env:BUILD_COMMAND='make'; docker compose up --build`
 - Bash example:
   `BUILD_DIR=/abs/path/to/project BUILD_COMMAND=make docker compose up --build`
+- Windows `cmd` examples:
+  `compose-up-all.cmd D:\path\to\project`
+  `compose-up-all.cmd D:\path\to\project --targets x64,arm64`
+  `compose-up-all.cmd D:\path\to\project "cmake --build build" --build --targets x86,x64`
+  `compose-up-all.cmd D:\path\to\project --mode build --targets all -- --abort-on-container-exit`
+- Linux/macOS `sh` examples:
+  `sh ./compose-up-all.sh /path/to/project`
+  `sh ./compose-up-all.sh /path/to/project --targets x64,arm64`
+  `sh ./compose-up-all.sh /path/to/project "cmake --build build" --build --targets x86,x64`
+  `sh ./compose-up-all.sh /path/to/project --mode build --targets all -- --abort-on-container-exit`
 - The compose run exits after all service commands finish. Build outputs stay in the mounted host directory.
 
 Legacy VisualGDB debug entrypoint:

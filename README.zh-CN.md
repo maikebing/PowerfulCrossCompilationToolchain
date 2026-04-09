@@ -30,10 +30,23 @@ English README: [README.md](README.md)
 - `docker-compose.override.yml` 只保存本地 `build` 定义；执行 `docker compose up --build` 时，会在启动前按 override 中的配置本地构建镜像。
 - 通过环境变量 `BUILD_DIR` 指定要构建的宿主机目录，可选环境变量 `BUILD_COMMAND` 指定实际执行的构建命令，默认是 `make`。
 - 可选环境变量 `PCCT_IMAGE_PREFIX` 用于切换镜像前缀，默认值为 `ghcr.io/maikebing`；`PCCT_IMAGE_TAG` 默认为 `latest`。
+- 为了避免每次手动设置环境变量，仓库根目录还提供了 `compose-up-all.cmd` 和 `compose-up-all.sh` 两个包装脚本。
+- 包装脚本默认工作模式是 `pull`，即只使用 `docker-compose.yml` 并从远端拉取镜像；传入 `--build` 或 `--mode build` 后，会自动叠加 `docker-compose.override.yml` 并执行本地镜像构建。
+- 包装脚本默认目标平台是 `all`，也可以通过 `--targets` 指定单个或多个平台，例如 `x64`、`arm64`、`x86,x64` 或 `x86 x64`。支持的平台名为 `x86legacy`、`x86`、`arm`、`x64`、`arm64`、`loongson`。
 - PowerShell 示例：
   `$env:BUILD_DIR='D:/path/to/project'; $env:BUILD_COMMAND='make'; docker compose up --build`
 - Bash 示例：
   `BUILD_DIR=/abs/path/to/project BUILD_COMMAND=make docker compose up --build`
+- Windows `cmd` 示例：
+  `compose-up-all.cmd D:\path\to\project`
+  `compose-up-all.cmd D:\path\to\project --targets x64,arm64`
+  `compose-up-all.cmd D:\path\to\project "cmake --build build" --build --targets x86,x64`
+  `compose-up-all.cmd D:\path\to\project --mode build --targets all -- --abort-on-container-exit`
+- Linux/macOS `sh` 示例：
+  `sh ./compose-up-all.sh /path/to/project`
+  `sh ./compose-up-all.sh /path/to/project --targets x64,arm64`
+  `sh ./compose-up-all.sh /path/to/project "cmake --build build" --build --targets x86,x64`
+  `sh ./compose-up-all.sh /path/to/project --mode build --targets all -- --abort-on-container-exit`
 - 所有服务执行结束后，`docker compose up` 会退出；构建产物会保留在挂载的宿主机目录中。
 
 ## x86Legacy 特殊说明
