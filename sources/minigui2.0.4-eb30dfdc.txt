@@ -1,0 +1,14 @@
+Vendored source archive for x86Legacy MiniGUI 2.0.4
+
+Upstream repository: https://github.com/maikebing/minigui2.0.4
+Pinned commit: eb30dfdcff98dd3d63f4f6267b9fec09de6e73cf
+Downloaded archive URL: https://codeload.github.com/maikebing/minigui2.0.4/tar.gz/eb30dfdcff98dd3d63f4f6267b9fec09de6e73cf
+Local archive: sources/minigui2.0.4-eb30dfdc.tar.gz
+SHA256: E51C4C4C9DDB976A6ECF18298B40521156890CFA14EEA8B49B5828528177074C
+
+Why vendored:
+- `x86Legacy` requires MiniGUI 2.0.4 to preserve the legacy VisualGDB/debug image.
+- Keeping a local archive avoids CI or future rebuilds breaking if the upstream repository is renamed, deleted, or rewritten.
+
+Licensing note:
+- The vendored archive contains the upstream licensing files, including `LICENSE.POLICY` and `LICENSE.POLICY.zh`.
