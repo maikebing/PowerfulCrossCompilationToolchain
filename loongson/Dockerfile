@@ -72,6 +72,7 @@ RUN printf '%s\n' \
                file \
                flex \
                bison \
+               lbzip2 \
                libtool \
                libtool-bin \
                m4 \
