@@ -68,45 +68,49 @@ RUN printf '%s\n' \
         'deb http://archive.debian.org/debian-security wheezy/updates non-free' \
         > /etc/apt/sources.list
 
-RUN for attempt in 1 2 3 4 5; do \
-        rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*.deb; \
-        if apt-get -o Acquire::Check-Valid-Until=false -y --force-yes -q update && \
-           apt-get install -y --force-yes --fix-missing -q \
-               autoconf \
-               automake \
-               binutils \
-               build-essential \
-               busybox-static \
-               ca-certificates \
-               cmake \
-               file \
-               flex \
-               bison \
-               libconfig-dev \
-               libgtk2.0-dev \
-               libjpeg-dev \
-               libpng12-dev \
-               libpq-dev \
-               libudev-dev \
-               libtool \
-               libvncserver-dev \
-               libxml2-dev \
-               m4 \
-               make \
-               perl \
-               pkg-config \
-               wget \
-               xz-utils \
-               zlib1g-dev; then \
-            break; \
-        fi; \
-        if [ "$attempt" = "5" ]; then \
-            exit 1; \
-        fi; \
-        apt-get install -f -y --force-yes >/dev/null 2>&1 || true; \
-        echo "apt attempt $attempt failed, retrying..." >&2; \
-        sleep 10; \
-    done && \
+RUN set -e; \
+    retry() { \
+        n=1; \
+        while true; do \
+            "$@" && return 0; \
+            if [ "$n" -ge 5 ]; then return 1; fi; \
+            echo "Retry $n/5: $*" >&2; \
+            n=$((n + 1)); \
+            sleep 5; \
+        done; \
+    }; \
+    rm -rf /var/lib/apt/lists/* && \
+    retry apt-get -o Acquire::Check-Valid-Until=false -y --force-yes -q update && \
+    retry apt-get install -y --fix-missing --force-yes -q \
+        autoconf \
+        automake \
+        binutils \
+        build-essential \
+        busybox-static \
+        ca-certificates \
+        cmake \
+        file \
+        flex \
+        bison \
+        libtool \
+        m4 \
+        make \
+        perl \
+        pkg-config \
+        wget \
+        xz-utils && \
+    retry apt-get install -y --fix-missing --force-yes -q \
+        libconfig-dev \
+        libjpeg-dev \
+        libpng12-dev \
+        libpq-dev \
+        libudev-dev \
+        zlib1g-dev && \
+    retry apt-get install -y --fix-missing --force-yes -q \
+        libxml2-dev && \
+    retry apt-get install -y --fix-missing --force-yes -q \
+        libgtk2.0-dev \
+        libvncserver-dev && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 

@@ -21,17 +21,27 @@ fi
 cp "$SCRIPT_DIR/lv_conf.h" ./lv_conf.h
 rm -f liblvgl.a
 
-FREETYPE_CFLAGS=$(${PKG_CONFIG:-pkg-config} --cflags freetype2 2>/dev/null || true)
-FFMPEG_CFLAGS=$(${PKG_CONFIG:-pkg-config} --cflags libavformat libavcodec libavutil libswscale 2>/dev/null || true)
-
-if [ -z "$FREETYPE_CFLAGS" ]; then
+if ! ${PKG_CONFIG:-pkg-config} --exists freetype2; then
     echo "pkg-config freetype2 cflags not found for target $1" >&2
     exit 1
 fi
 
-if [ -z "$FFMPEG_CFLAGS" ]; then
+if ! ${PKG_CONFIG:-pkg-config} --exists libavformat libavcodec libavutil libswscale; then
     echo "pkg-config ffmpeg cflags not found for target $1" >&2
     exit 1
+fi
+
+FREETYPE_CFLAGS=$(${PKG_CONFIG:-pkg-config} --cflags freetype2 2>/dev/null || true)
+FFMPEG_CFLAGS=$(${PKG_CONFIG:-pkg-config} --cflags libavformat libavcodec libavutil libswscale 2>/dev/null || true)
+
+FREETYPE_INCLUDE_DIR="$PCCT_INCLUDEDIR/freetype2"
+if [ -f "$FREETYPE_INCLUDE_DIR/ft2build.h" ]; then
+    case " $FREETYPE_CFLAGS " in
+        *" -I$FREETYPE_INCLUDE_DIR "*) ;;
+        *)
+            FREETYPE_CFLAGS="$FREETYPE_CFLAGS -I$FREETYPE_INCLUDE_DIR"
+            ;;
+    esac
 fi
 
 tmpdir=$(mktemp -d)

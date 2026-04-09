@@ -31,7 +31,7 @@ build_one() {
 
     rm -rf "$workdir"
     mkdir -p "$workdir"
-    tar -xzf "$archive" -C "$workdir" --strip-components=1
+    tar -xf "$archive" -C "$workdir" --strip-components=1
 
     echo "build $dep for $TARGET"
     (
