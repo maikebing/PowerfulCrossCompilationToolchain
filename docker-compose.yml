@@ -8,6 +8,7 @@ x-build-job: &build-job
       target: /LaneApp
   environment:
     BUILD_COMMAND: ${BUILD_COMMAND:-make}
+  pull_policy: always
   entrypoint:
     - /bin/bash
     - -lc
@@ -25,42 +26,30 @@ x-build-job: &build-job
 services:
   x86legacy:
     <<: *build-job
+    image: ${PCCT_IMAGE_PREFIX:-ghcr.io/maikebing}/pcct-build-x86-legacy:${PCCT_IMAGE_TAG:-latest}
     platform: linux/386
-    build:
-      context: .
-      dockerfile: ./x86Legacy/Dockerfile
 
   x86:
     <<: *build-job
+    image: ${PCCT_IMAGE_PREFIX:-ghcr.io/maikebing}/pcct-build-x86:${PCCT_IMAGE_TAG:-latest}
     platform: linux/386
-    build:
-      context: .
-      dockerfile: ./x86/Dockerfile
 
   arm:
     <<: *build-job
+    image: ${PCCT_IMAGE_PREFIX:-ghcr.io/maikebing}/pcct-build-arm:${PCCT_IMAGE_TAG:-latest}
     platform: linux/386
-    build:
-      context: .
-      dockerfile: ./arm/Dockerfile
 
   x64:
     <<: *build-job
+    image: ${PCCT_IMAGE_PREFIX:-ghcr.io/maikebing}/pcct-build-x64:${PCCT_IMAGE_TAG:-latest}
     platform: linux/amd64
-    build:
-      context: .
-      dockerfile: ./x64/Dockerfile
 
   arm64:
     <<: *build-job
+    image: ${PCCT_IMAGE_PREFIX:-ghcr.io/maikebing}/pcct-build-arm64:${PCCT_IMAGE_TAG:-latest}
     platform: linux/amd64
-    build:
-      context: .
-      dockerfile: ./arm64/Dockerfile
 
   loongson:
     <<: *build-job
+    image: ${PCCT_IMAGE_PREFIX:-ghcr.io/maikebing}/pcct-build-loongson:${PCCT_IMAGE_TAG:-latest}
     platform: linux/amd64
-    build:
-      context: .
-      dockerfile: ./loongson/Dockerfile

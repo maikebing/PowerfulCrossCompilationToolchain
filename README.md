@@ -27,7 +27,10 @@ Shared dependency policy:
 Batch build with Docker Compose:
 
 - `docker-compose.yml` can start all build images in parallel and bind-mount a host source directory into `/LaneApp`.
+- `docker-compose.yml` is the runtime entrypoint and pulls prebuilt images from GHCR by default.
+- `docker-compose.override.yml` only carries the local `build` definitions. When you run `docker compose up --build`, Compose uses the override and rebuilds the images locally before starting them.
 - Set `BUILD_DIR` to the host directory you want to build, and optionally set `BUILD_COMMAND` (defaults to `make`).
+- Optionally set `PCCT_IMAGE_PREFIX` (defaults to `ghcr.io/maikebing`) and `PCCT_IMAGE_TAG` (defaults to `latest`) to switch image registry/tag.
 - PowerShell example:
   `$env:BUILD_DIR='D:/path/to/project'; $env:BUILD_COMMAND='make'; docker compose up --build`
 - Bash example:

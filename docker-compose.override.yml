@@ -1,0 +1,30 @@
+services:
+  x86legacy:
+    build:
+      context: .
+      dockerfile: ./x86Legacy/Dockerfile
+
+  x86:
+    build:
+      context: .
+      dockerfile: ./x86/Dockerfile
+
+  arm:
+    build:
+      context: .
+      dockerfile: ./arm/Dockerfile
+
+  x64:
+    build:
+      context: .
+      dockerfile: ./x64/Dockerfile
+
+  arm64:
+    build:
+      context: .
+      dockerfile: ./arm64/Dockerfile
+
+  loongson:
+    build:
+      context: .
+      dockerfile: ./loongson/Dockerfile

@@ -26,7 +26,10 @@ English README: [README.md](README.md)
 ## 使用 Docker Compose 并行构建
 
 - `docker-compose.yml` 可以一次启动全部构建镜像，并把宿主机上的源码目录挂载到容器内的 `/LaneApp`。
+- `docker-compose.yml` 是日常运行入口，默认从 GHCR 拉取预构建镜像。
+- `docker-compose.override.yml` 只保存本地 `build` 定义；执行 `docker compose up --build` 时，会在启动前按 override 中的配置本地构建镜像。
 - 通过环境变量 `BUILD_DIR` 指定要构建的宿主机目录，可选环境变量 `BUILD_COMMAND` 指定实际执行的构建命令，默认是 `make`。
+- 可选环境变量 `PCCT_IMAGE_PREFIX` 用于切换镜像前缀，默认值为 `ghcr.io/maikebing`；`PCCT_IMAGE_TAG` 默认为 `latest`。
 - PowerShell 示例：
   `$env:BUILD_DIR='D:/path/to/project'; $env:BUILD_COMMAND='make'; docker compose up --build`
 - Bash 示例：
