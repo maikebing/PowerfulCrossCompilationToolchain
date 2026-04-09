@@ -23,6 +23,16 @@ English README: [README.md](README.md)
 - 所有平台镜像都会从源码构建 `freetype/sqlite/libusb/curl/ffmpeg/lvgl`，并安装目标平台对应的静态库、头文件和 `pkg-config` 元数据。
 - `lvgl` 使用共享的 `lv_conf.h` 构建，并开启 FreeType、QRCode、FFmpeg、Linux framebuffer 支持。
 
+## 使用 Docker Compose 并行构建
+
+- `docker-compose.yml` 可以一次启动全部构建镜像，并把宿主机上的源码目录挂载到容器内的 `/LaneApp`。
+- 通过环境变量 `BUILD_DIR` 指定要构建的宿主机目录，可选环境变量 `BUILD_COMMAND` 指定实际执行的构建命令，默认是 `make`。
+- PowerShell 示例：
+  `$env:BUILD_DIR='D:/path/to/project'; $env:BUILD_COMMAND='make'; docker compose up --build`
+- Bash 示例：
+  `BUILD_DIR=/abs/path/to/project BUILD_COMMAND=make docker compose up --build`
+- 所有服务执行结束后，`docker compose up` 会退出；构建产物会保留在挂载的宿主机目录中。
+
 ## x86Legacy 特殊说明
 
 - `x86Legacy` 仍保留 MiniGUI 2.0.4、SSH，以及 `arm + x86` 双目标的历史调试流程。

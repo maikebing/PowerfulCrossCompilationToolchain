@@ -1,0 +1,66 @@
+x-build-job: &build-job
+  init: true
+  restart: "no"
+  working_dir: /LaneApp
+  volumes:
+    - type: bind
+      source: ${BUILD_DIR:?Please set BUILD_DIR to the host source directory}
+      target: /LaneApp
+  environment:
+    BUILD_COMMAND: ${BUILD_COMMAND:-make}
+  entrypoint:
+    - /bin/bash
+    - -lc
+  command:
+    - |-
+      set -euo pipefail
+      if [ ! -d /LaneApp ]; then
+        echo "Missing mounted build directory: /LaneApp" >&2
+        exit 2
+      fi
+      echo "Starting build in /LaneApp"
+      echo "Command: $$BUILD_COMMAND"
+      exec bash -lc "$$BUILD_COMMAND"
+
+services:
+  x86legacy:
+    <<: *build-job
+    platform: linux/386
+    build:
+      context: .
+      dockerfile: ./x86Legacy/Dockerfile
+
+  x86:
+    <<: *build-job
+    platform: linux/386
+    build:
+      context: .
+      dockerfile: ./x86/Dockerfile
+
+  arm:
+    <<: *build-job
+    platform: linux/386
+    build:
+      context: .
+      dockerfile: ./arm/Dockerfile
+
+  x64:
+    <<: *build-job
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: ./x64/Dockerfile
+
+  arm64:
+    <<: *build-job
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: ./arm64/Dockerfile
+
+  loongson:
+    <<: *build-job
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: ./loongson/Dockerfile

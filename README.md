@@ -24,6 +24,16 @@ Shared dependency policy:
 - `lvgl` is built with the shared `lv_conf.h`, with FreeType, QRCode, FFmpeg, and Linux framebuffer support enabled.
 - `x86Legacy` vendors the required `MiniGUI 2.0.4` source archive locally so the legacy image stays buildable even if the upstream GitHub repository is renamed, deleted, or otherwise unavailable.
 
+Batch build with Docker Compose:
+
+- `docker-compose.yml` can start all build images in parallel and bind-mount a host source directory into `/LaneApp`.
+- Set `BUILD_DIR` to the host directory you want to build, and optionally set `BUILD_COMMAND` (defaults to `make`).
+- PowerShell example:
+  `$env:BUILD_DIR='D:/path/to/project'; $env:BUILD_COMMAND='make'; docker compose up --build`
+- Bash example:
+  `BUILD_DIR=/abs/path/to/project BUILD_COMMAND=make docker compose up --build`
+- The compose run exits after all service commands finish. Build outputs stay in the mounted host directory.
+
 Legacy VisualGDB debug entrypoint:
 
 - Start the local debug builder with `docker compose -f docker-compose.debug.yml up --build -d x86-debug-builder`
