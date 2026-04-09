@@ -110,6 +110,11 @@ RUN /work/build-selected-deps.sh arm freetype sqlite libusb curl ffmpeg lvgl && 
     mkdir -p /tmp/minigui2.0.4 && \
     tar -xzf /work/minigui2.0.4-eb30dfdc.tar.gz -C /tmp/minigui2.0.4 --strip-components=1 && \
     cd /tmp/minigui2.0.4 && \
+    chmod 755 ./rebuild && \
+    ./rebuild && \
+    make && \
+    make install && \
+    make clean && \
     chmod 755 ./rebuildx86 && \
     ./rebuildx86 && \
     make && \
