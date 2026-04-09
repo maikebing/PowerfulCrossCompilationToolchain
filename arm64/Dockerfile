@@ -16,6 +16,8 @@ FROM debian:trixie-slim
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
+ARG PCCT_USE_TUNA_MIRROR=1
+
 ENV DEBIAN_FRONTEND=noninteractive \
     TZ=Asia/Shanghai \
     CC=aarch64-linux-gnu-gcc \
@@ -37,10 +39,17 @@ RUN printf '%s\n' \
         'Acquire::http::Pipeline-Depth "0";' \
         > /etc/apt/apt.conf.d/99laneapp-network && \
     rm -f /etc/apt/sources.list.d/debian.sources && \
+    if [ "$PCCT_USE_TUNA_MIRROR" = "1" ]; then \
+        DEBIAN_MIRROR='http://mirrors.tuna.tsinghua.edu.cn/debian'; \
+        DEBIAN_SECURITY_MIRROR='http://mirrors.tuna.tsinghua.edu.cn/debian-security'; \
+    else \
+        DEBIAN_MIRROR='http://deb.debian.org/debian'; \
+        DEBIAN_SECURITY_MIRROR='http://deb.debian.org/debian-security'; \
+    fi && \
     printf '%s\n' \
-        'deb http://mirrors.tuna.tsinghua.edu.cn/debian trixie main' \
-        'deb http://mirrors.tuna.tsinghua.edu.cn/debian trixie-updates main' \
-        'deb http://mirrors.tuna.tsinghua.edu.cn/debian-security trixie-security main' \
+        "deb ${DEBIAN_MIRROR} trixie main" \
+        "deb ${DEBIAN_MIRROR} trixie-updates main" \
+        "deb ${DEBIAN_SECURITY_MIRROR} trixie-security main" \
         > /etc/apt/sources.list && \
     dpkg --add-architecture arm64 && \
     for attempt in 1 2 3 4 5; do \

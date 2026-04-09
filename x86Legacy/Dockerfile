@@ -7,8 +7,18 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 COPY sources/dependency-versions.sh /work/dependency-versions.sh
 COPY sources/fetch-github-sources.sh /work/fetch-github-sources.sh
 
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends ca-certificates git wget && \
+RUN for attempt in 1 2 3 4 5; do \
+        rm -rf /var/lib/apt/lists/*; \
+        if apt-get update && \
+           apt-get install -y --no-install-recommends --fix-missing ca-certificates wget; then \
+            break; \
+        fi; \
+        if [ "$attempt" = "5" ]; then \
+            exit 1; \
+        fi; \
+        echo "apt attempt $attempt failed, retrying..." >&2; \
+        sleep 10; \
+    done && \
     rm -rf /var/lib/apt/lists/*
 
 RUN chmod +x /work/*.sh && \

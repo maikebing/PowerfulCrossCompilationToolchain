@@ -8,6 +8,8 @@ services:
     build:
       context: .
       dockerfile: ./x86/Dockerfile
+      args:
+        PCCT_USE_TUNA_MIRROR: ${PCCT_USE_TUNA_MIRROR:-1}
 
   arm:
     build:
@@ -18,13 +20,19 @@ services:
     build:
       context: .
       dockerfile: ./x64/Dockerfile
+      args:
+        PCCT_USE_TUNA_MIRROR: ${PCCT_USE_TUNA_MIRROR:-1}
 
   arm64:
     build:
       context: .
       dockerfile: ./arm64/Dockerfile
+      args:
+        PCCT_USE_TUNA_MIRROR: ${PCCT_USE_TUNA_MIRROR:-1}
 
   loongson:
     build:
       context: .
       dockerfile: ./loongson/Dockerfile
+      args:
+        PCCT_USE_TUNA_MIRROR: ${PCCT_USE_TUNA_MIRROR:-1}

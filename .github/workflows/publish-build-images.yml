@@ -90,6 +90,8 @@ jobs:
         with:
           context: .
           file: ./${{ matrix.file }}
+          build-args: |
+            PCCT_USE_TUNA_MIRROR=0
           platforms: ${{ matrix.container_platform }}
           push: true
           tags: ${{ steps.tags.outputs.tags }}

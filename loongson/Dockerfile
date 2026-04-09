@@ -18,6 +18,7 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 ARG LOONGSON_TOOLCHAIN_VERSION=2025.08.08
 ARG LOONGSON_TOOLCHAIN_FILE=x86_64-cross-tools-loongarch64-binutils_2.45-gcc_15.1.0-glibc_2.42.tar.xz
+ARG PCCT_USE_TUNA_MIRROR=1
 
 ENV DEBIAN_FRONTEND=noninteractive \
     TZ=Asia/Shanghai \
@@ -45,10 +46,17 @@ RUN printf '%s\n' \
         'Acquire::http::Pipeline-Depth "0";' \
         > /etc/apt/apt.conf.d/99laneapp-network && \
     rm -f /etc/apt/sources.list.d/debian.sources && \
+    if [ "$PCCT_USE_TUNA_MIRROR" = "1" ]; then \
+        DEBIAN_MIRROR='http://mirrors.tuna.tsinghua.edu.cn/debian'; \
+        DEBIAN_SECURITY_MIRROR='http://mirrors.tuna.tsinghua.edu.cn/debian-security'; \
+    else \
+        DEBIAN_MIRROR='http://deb.debian.org/debian'; \
+        DEBIAN_SECURITY_MIRROR='http://deb.debian.org/debian-security'; \
+    fi && \
     printf '%s\n' \
-        'deb http://mirrors.tuna.tsinghua.edu.cn/debian trixie main' \
-        'deb http://mirrors.tuna.tsinghua.edu.cn/debian trixie-updates main' \
-        'deb http://mirrors.tuna.tsinghua.edu.cn/debian-security trixie-security main' \
+        "deb ${DEBIAN_MIRROR} trixie main" \
+        "deb ${DEBIAN_MIRROR} trixie-updates main" \
+        "deb ${DEBIAN_SECURITY_MIRROR} trixie-security main" \
         > /etc/apt/sources.list && \
     for attempt in 1 2 3 4 5; do \
         rm -rf /var/lib/apt/lists/*; \
@@ -81,9 +89,9 @@ RUN printf '%s\n' \
         sleep 10; \
     done && \
     printf '%s\n' \
-        'deb [arch=amd64] http://mirrors.tuna.tsinghua.edu.cn/debian trixie main' \
-        'deb [arch=amd64] http://mirrors.tuna.tsinghua.edu.cn/debian trixie-updates main' \
-        'deb [arch=amd64] http://mirrors.tuna.tsinghua.edu.cn/debian-security trixie-security main' \
+        "deb [arch=amd64] ${DEBIAN_MIRROR} trixie main" \
+        "deb [arch=amd64] ${DEBIAN_MIRROR} trixie-updates main" \
+        "deb [arch=amd64] ${DEBIAN_SECURITY_MIRROR} trixie-security main" \
         'deb [arch=loong64] http://deb.debian.org/debian-ports unstable main' \
         > /etc/apt/sources.list && \
     dpkg --add-architecture loong64 && \
