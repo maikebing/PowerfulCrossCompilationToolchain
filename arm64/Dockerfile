@@ -72,6 +72,7 @@ RUN printf '%s\n' \
                libjpeg-dev:arm64 \
                libpq-dev:arm64 \
                libudev-dev:arm64 \
+               lbzip2 \
                libtool \
                libtool-bin \
                m4 \
