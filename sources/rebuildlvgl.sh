@@ -75,8 +75,10 @@ mkdir -p "$PCCT_INCLUDEDIR/lvgl"
 install -m 644 liblvgl.a "$PCCT_LIBDIR/liblvgl.a"
 cp -R src "$PCCT_INCLUDEDIR/lvgl/"
 install -m 644 lvgl.h "$PCCT_INCLUDEDIR/lvgl/lvgl.h"
+install -m 644 lv_version.h "$PCCT_INCLUDEDIR/lvgl/lv_version.h"
 install -m 644 lv_conf.h "$PCCT_INCLUDEDIR/lvgl/lv_conf.h"
 ln -sfn lvgl/lvgl.h "$PCCT_INCLUDEDIR/lvgl.h"
+ln -sfn lvgl/lv_version.h "$PCCT_INCLUDEDIR/lv_version.h"
 ln -sfn lvgl/lv_conf.h "$PCCT_INCLUDEDIR/lv_conf.h"
 
 cat > "$PCCT_PKGCONFIGDIR/lvgl.pc" <<EOF
