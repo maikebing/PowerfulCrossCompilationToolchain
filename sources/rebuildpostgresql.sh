@@ -48,13 +48,17 @@ export CXXFLAGS="${CXXFLAGS:-} -O2 -fPIC"
     --without-readline \
     --without-zlib
 
-# Build and install only the libpq client library
+# Build and install the frontend static archives required by libpq.pc.
+# PostgreSQL 17.x advertises libpgcommon/libpgport as private static deps.
+make -C src/common -j"$(pcct_nproc)"
+make -C src/port -j"$(pcct_nproc)"
 make -C src/interfaces/libpq -j"$(pcct_nproc)"
-make -C src/interfaces/libpq install LIBDIR="$PCCT_LIBDIR"
+make -C src/common install libdir="$PCCT_LIBDIR"
+make -C src/port install libdir="$PCCT_LIBDIR"
+make -C src/interfaces/libpq install libdir="$PCCT_LIBDIR"
 
 # Install libpq header files
 mkdir -p "$PCCT_INCLUDEDIR"
 cp src/include/libpq-fe.h "$PCCT_INCLUDEDIR/" 2>/dev/null || true
 cp src/include/libpq-events.h "$PCCT_INCLUDEDIR/" 2>/dev/null || true
 cp src/include/postgres_ext.h "$PCCT_INCLUDEDIR/" 2>/dev/null || true
-
