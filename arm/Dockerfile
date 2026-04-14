@@ -12,7 +12,12 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 RUN chmod +x /work/*.sh && \
-    /work/fetch-github-sources.sh /dist curl freetype libusb sqlite ffmpeg lvgl
+    /work/fetch-github-sources.sh /dist curl freetype libusb sqlite ffmpeg lvgl && \
+    echo "Fetching PostgreSQL 17.2..." && \
+    wget -q --https-only --tries=5 --waitretry=10 \
+        -O /dist/postgresql-REL_17_2.tar.gz \
+        https://github.com/postgres/postgres/archive/refs/tags/REL_17_2.tar.gz && \
+    echo "PostgreSQL 17.2 fetched successfully"
 
 FROM --platform=${BASE_PLATFORM} i386/debian:wheezy
 
@@ -48,6 +53,7 @@ COPY sources/rebuildfreetype.sh /work/rebuildfreetype.sh
 COPY sources/rebuildlibusb.sh /work/rebuildlibusb.sh
 COPY sources/rebuildlvgl.sh /work/rebuildlvgl.sh
 COPY sources/rebuildsqlite.sh /work/rebuildsqlite.sh
+COPY sources/rebuildpostgresql.sh /work/rebuildpostgresql.sh
 COPY --from=fetcher /dist/ /dist/
 
 RUN printf '%s\n' \
@@ -159,7 +165,7 @@ RUN rm -rf \
         /work/toolchain_R2_EABI/usr/arm-unknown-linux-gnueabi/sysroot/usr/lib/pkgconfig/libswscale.pc \
         /work/toolchain_R2_EABI/usr/arm-unknown-linux-gnueabi/sysroot/usr/lib/pkgconfig/lvgl.pc
 
-RUN /work/build-selected-deps.sh arm freetype sqlite libusb curl ffmpeg lvgl && \
+RUN /work/build-selected-deps.sh arm freetype sqlite libusb curl ffmpeg lvgl postgresql && \
     rm -rf /dist
 
 WORKDIR /LaneApp
