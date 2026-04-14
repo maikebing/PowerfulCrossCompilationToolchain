@@ -15,6 +15,39 @@ shift
 
 mkdir -p "$OUTPUT_DIR"
 
+download_with_fallback() {
+    url=$1
+    out=$2
+    dep=$3
+    in_ci=0
+
+    if wget -q --https-only --tries=5 --waitretry=5 -O "$out" "$url"; then
+        return 0
+    fi
+
+    case "${ENV_IN_CI:-${CI:-}}" in
+        1|true|TRUE|yes|YES)
+            in_ci=1
+            ;;
+    esac
+
+    if [ "$in_ci" -eq 1 ]; then
+        return 1
+    fi
+
+    proxy_addr=${PCCT_HTTP_PROXY:-http://127.0.0.1:7890}
+    echo "retry $dep via proxy: $proxy_addr"
+    if http_proxy="$proxy_addr" \
+       https_proxy="$proxy_addr" \
+       HTTP_PROXY="$proxy_addr" \
+       HTTPS_PROXY="$proxy_addr" \
+       wget -q --https-only --tries=3 --waitretry=5 -O "$out" "$url"; then
+        return 0
+    fi
+
+    return 1
+}
+
 fetch_one() {
     dep=$1
     archive="$OUTPUT_DIR/$(pcct_dep_archive "$dep")"
@@ -29,7 +62,11 @@ fetch_one() {
 
     rm -f "$archive" "$tmp"
     echo "fetch $dep from $url"
-    wget -q --https-only --tries=5 --waitretry=5 -O "$tmp" "$url"
+    if ! download_with_fallback "$url" "$tmp" "$dep"; then
+        echo "failed to download $dep from $url (direct + proxy fallback)" >&2
+        return 1
+    fi
+
     echo "$sha256  $tmp" | sha256sum -c -
     mv "$tmp" "$archive"
 }

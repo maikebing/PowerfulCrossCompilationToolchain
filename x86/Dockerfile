@@ -12,7 +12,12 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 RUN chmod +x /work/*.sh && \
-    /work/fetch-github-sources.sh /dist curl freetype libusb sqlite ffmpeg lvgl postgresql
+    /work/fetch-github-sources.sh /dist curl freetype libusb sqlite ffmpeg lvgl && \
+    echo "Fetching PostgreSQL 17.2..." && \
+    wget -q --https-only --tries=5 --waitretry=10 \
+        -O /dist/postgresql-REL_17_2.tar.gz \
+        https://github.com/postgres/postgres/archive/refs/tags/REL_17_2.tar.gz && \
+    echo "PostgreSQL 17.2 fetched successfully"
 
 FROM --platform=${BASE_PLATFORM} debian:trixie-slim
 

@@ -46,10 +46,8 @@ POSTGRESQL_VERSION=17.2
 POSTGRESQL_TAG=REL_17_2
 POSTGRESQL_ARCHIVE="postgresql-${POSTGRESQL_TAG}.tar.gz"
 POSTGRESQL_URL="https://github.com/postgres/postgres/archive/refs/tags/${POSTGRESQL_TAG}.tar.gz"
-# TODO: Verify SHA256 for PostgreSQL 17.2 release
-# Run: sha256sum postgresql-REL_17_2.tar.gz
-# Or from GitHub: wget -q -O - https://github.com/postgres/postgres/archive/refs/tags/REL_17_2.tar.gz | sha256sum
-POSTGRESQL_SHA256="AAAAAABBBBBBCCCCCCDDDDDDEEEEEEFFFFFFGGGGGGHHHHHHHIIIIIIIJJJJJJKK"
+# Verified from downloaded source archive (REL_17_2.tar.gz)
+POSTGRESQL_SHA256="DEA967B2C9FD112C27478354E3FCF8D5A5F00ACC7CC6D8D185C3FAE70B6EB67A"
 
 pcct_dep_archive() {
     case "$1" in
