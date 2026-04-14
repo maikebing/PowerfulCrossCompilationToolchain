@@ -22,7 +22,7 @@ RUN for attempt in 1 2 3 4 5; do \
     rm -rf /var/lib/apt/lists/*
 
 RUN chmod +x /work/*.sh && \
-    /work/fetch-github-sources.sh /dist curl freetype libusb sqlite ffmpeg lvgl
+    /work/fetch-github-sources.sh /dist curl freetype libusb sqlite ffmpeg lvgl postgresql
 
 FROM --platform=${BASE_PLATFORM} i386/debian:wheezy
 
@@ -41,6 +41,7 @@ COPY sources/rebuildfreetype.sh /work/rebuildfreetype.sh
 COPY sources/rebuildlibusb.sh /work/rebuildlibusb.sh
 COPY sources/rebuildlvgl.sh /work/rebuildlvgl.sh
 COPY sources/rebuildsqlite.sh /work/rebuildsqlite.sh
+COPY sources/rebuildpostgresql.sh /work/rebuildpostgresql.sh
 COPY sources/minigui2.0.4-eb30dfdc.tar.gz /work/minigui2.0.4-eb30dfdc.tar.gz
 COPY --from=fetcher /dist/ /dist/
 
@@ -105,8 +106,8 @@ RUN rm -rf \
         /work/toolchain_R2_EABI/usr/arm-unknown-linux-gnueabi/sysroot/usr/lib/pkgconfig/libswscale.pc \
         /work/toolchain_R2_EABI/usr/arm-unknown-linux-gnueabi/sysroot/usr/lib/pkgconfig/lvgl.pc
 
-RUN /work/build-selected-deps.sh arm freetype sqlite libusb curl ffmpeg lvgl && \
-    /work/build-selected-deps.sh x86 freetype sqlite libusb curl ffmpeg lvgl && \
+RUN /work/build-selected-deps.sh arm freetype sqlite libusb curl ffmpeg lvgl postgresql && \
+    /work/build-selected-deps.sh x86 freetype sqlite libusb curl ffmpeg lvgl postgresql && \
     mkdir -p /tmp/minigui2.0.4 && \
     tar -xzf /work/minigui2.0.4-eb30dfdc.tar.gz -C /tmp/minigui2.0.4 --strip-components=1 && \
     cd /tmp/minigui2.0.4 && \

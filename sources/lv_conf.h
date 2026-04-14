@@ -26,8 +26,17 @@
 /** 1: Use custom malloc/free; 0: Use the built-in memory pool */
 #define LV_MEM_CUSTOM 0
 #if LV_MEM_CUSTOM == 0
+    /*
+     * GIF/video-heavy lanes can fragment the built-in LVGL heap quickly.
+     * Keep a larger pool on desktop-class targets, while staying conservative
+     * enough for the older ARM deployments that still share this config.
+     */
+    #if defined(__i386__) || defined(__x86_64__) || defined(__loongarch64__)
+        #define LV_MEM_SIZE (64 * 1024 * 1024U)    /* 64 MB */
+    #else
+        #define LV_MEM_SIZE (32 * 1024 * 1024U)    /* 32 MB */
+    #endif
     /** Size of the memory available for `lv_malloc()` in bytes (>=2kB) */
-    #define LV_MEM_SIZE (256 * 1024U)          /* 256 KB */
     /** Set an address for the memory pool instead of allocating it as a global array */
     #define LV_MEM_ADR 0
 #else

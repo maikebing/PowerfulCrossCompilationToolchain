@@ -42,6 +42,15 @@ LVGL_ARCHIVE="lvgl-${LVGL_TAG}.tar.gz"
 LVGL_URL="https://github.com/lvgl/lvgl/archive/refs/tags/${LVGL_TAG}.tar.gz"
 LVGL_SHA256="34A955CDF3A2D005507B704E87357AF669A114523B6D3F77B5344FDC68717BC6"
 
+POSTGRESQL_VERSION=17.2
+POSTGRESQL_TAG=REL_17_2
+POSTGRESQL_ARCHIVE="postgresql-${POSTGRESQL_TAG}.tar.gz"
+POSTGRESQL_URL="https://github.com/postgres/postgres/archive/refs/tags/${POSTGRESQL_TAG}.tar.gz"
+# TODO: Verify SHA256 for PostgreSQL 17.2 release
+# Run: sha256sum postgresql-REL_17_2.tar.gz
+# Or from GitHub: wget -q -O - https://github.com/postgres/postgres/archive/refs/tags/REL_17_2.tar.gz | sha256sum
+POSTGRESQL_SHA256="AAAAAABBBBBBCCCCCCDDDDDDEEEEEEFFFFFFGGGGGGHHHHHHHIIIIIIIJJJJJJKK"
+
 pcct_dep_archive() {
     case "$1" in
         curl) echo "$CURL_ARCHIVE" ;;
@@ -50,6 +59,7 @@ pcct_dep_archive() {
         sqlite) echo "$SQLITE_ARCHIVE" ;;
         ffmpeg) echo "$FFMPEG_ARCHIVE" ;;
         lvgl) echo "$LVGL_ARCHIVE" ;;
+        postgresql) echo "$POSTGRESQL_ARCHIVE" ;;
         *)
             echo "unknown dependency: $1" >&2
             return 1
@@ -65,6 +75,7 @@ pcct_dep_url() {
         sqlite) echo "$SQLITE_URL" ;;
         ffmpeg) echo "$FFMPEG_URL" ;;
         lvgl) echo "$LVGL_URL" ;;
+        postgresql) echo "$POSTGRESQL_URL" ;;
         *)
             echo "unknown dependency: $1" >&2
             return 1
@@ -80,6 +91,7 @@ pcct_dep_sha256() {
         sqlite) echo "$SQLITE_SHA256" ;;
         ffmpeg) echo "$FFMPEG_SHA256" ;;
         lvgl) echo "$LVGL_SHA256" ;;
+        postgresql) echo "$POSTGRESQL_SHA256" ;;
         *)
             echo "unknown dependency: $1" >&2
             return 1
@@ -95,6 +107,7 @@ pcct_dep_version() {
         sqlite) echo "$SQLITE_VERSION" ;;
         ffmpeg) echo "$FFMPEG_VERSION" ;;
         lvgl) echo "$LVGL_VERSION" ;;
+        postgresql) echo "$POSTGRESQL_VERSION" ;;
         *)
             echo "unknown dependency: $1" >&2
             return 1

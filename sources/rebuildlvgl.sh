@@ -81,6 +81,13 @@ ln -sfn lvgl/lvgl.h "$PCCT_INCLUDEDIR/lvgl.h"
 ln -sfn lvgl/lv_version.h "$PCCT_INCLUDEDIR/lv_version.h"
 ln -sfn lvgl/lv_conf.h "$PCCT_INCLUDEDIR/lv_conf.h"
 
+test -f "$PCCT_INCLUDEDIR/lvgl/lvgl.h"
+test -f "$PCCT_INCLUDEDIR/lvgl/lv_version.h"
+test -f "$PCCT_INCLUDEDIR/lvgl/lv_conf.h"
+test -L "$PCCT_INCLUDEDIR/lvgl.h"
+test -L "$PCCT_INCLUDEDIR/lv_version.h"
+test -L "$PCCT_INCLUDEDIR/lv_conf.h"
+
 cat > "$PCCT_PKGCONFIGDIR/lvgl.pc" <<EOF
 prefix=$PCCT_PREFIX
 includedir=$PCCT_INCLUDEDIR

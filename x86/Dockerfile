@@ -12,7 +12,7 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 RUN chmod +x /work/*.sh && \
-    /work/fetch-github-sources.sh /dist curl freetype libusb sqlite ffmpeg lvgl
+    /work/fetch-github-sources.sh /dist curl freetype libusb sqlite ffmpeg lvgl postgresql
 
 FROM --platform=${BASE_PLATFORM} debian:trixie-slim
 
@@ -98,10 +98,11 @@ COPY sources/rebuildfreetype.sh /work/rebuildfreetype.sh
 COPY sources/rebuildlibusb.sh /work/rebuildlibusb.sh
 COPY sources/rebuildlvgl.sh /work/rebuildlvgl.sh
 COPY sources/rebuildsqlite.sh /work/rebuildsqlite.sh
+COPY sources/rebuildpostgresql.sh /work/rebuildpostgresql.sh
 COPY --from=fetcher /dist/ /dist/
 
 RUN chmod +x /work/*.sh && \
-    /work/build-selected-deps.sh x86 freetype sqlite libusb curl ffmpeg lvgl && \
+    /work/build-selected-deps.sh x86 freetype sqlite libusb curl ffmpeg lvgl postgresql && \
     rm -rf /dist
 
 WORKDIR /LaneApp
